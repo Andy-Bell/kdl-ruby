@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "kdl/ruby"
+require "kdl/main"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
