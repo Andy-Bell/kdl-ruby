@@ -3,7 +3,7 @@ RSpec.describe Kdl::Main do
     expect(Kdl::Main::VERSION).not_to be nil
   end
 
-  it 'parses the string' do
+  it 'parses the basic.kdl' do
     file = File.read("spec/fixtures/files/basic.kdl")
     hash = Kdl::Main::Parse.to_h(file)
 
