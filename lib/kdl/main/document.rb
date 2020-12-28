@@ -21,10 +21,23 @@ module Kdl
       end
 
       def find_node
+        start = @buffer.scan_until(/\S/)
         name = @buffer.scan_until(/ /)
-        content = @buffer.scan_until(/\n/)
+        name = "#{start}#{name}"
 
-        nodes[name.strip] = content.strip.gsub('"', '')
+        if @buffer.peek(1) == '"'
+          raw = @buffer.scan_until(/\n/)
+          content = raw.strip.gsub('"', '')
+
+          nodes[name.strip] = content
+        elsif @buffer.peek(1) == '{'
+          nested = @buffer.scan_until(/\}/)
+          content = Document.new(nested).nodes
+
+          nodes[name.strip] = content
+        else
+          @buffer.skip(/\s+/)
+        end
       end
     end
   end
