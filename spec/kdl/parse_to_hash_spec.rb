@@ -32,4 +32,14 @@ RSpec.describe Kdl::Main do
       }
     )
   end
+
+  it 'parses the multi-node.kdl' do
+    file = File.read("spec/fixtures/files/multi-node.kdl")
+    hash = Kdl::Main::Parse.to_h(file)
+
+    expect(hash).to eq({
+      "test" => ["one", "two", "three"],
+      "test_2" => ["one", "two", { "nested" => ["one", "two"], "nested_2" => ["one", "two"]}]
+    })
+  end
 end
