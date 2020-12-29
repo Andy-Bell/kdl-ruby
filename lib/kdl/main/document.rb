@@ -26,7 +26,7 @@ module Kdl
         name = "#{start}#{name}"
 
         if @buffer.peek(1) == '"'
-          raw = @buffer.scan_until(/\n/)
+          raw = @buffer.scan_until(/\n|\Z/)
           content = raw.strip.gsub('"', '')
 
           nodes[name.strip] = content
