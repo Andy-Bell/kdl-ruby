@@ -54,9 +54,6 @@ module Kdl
           elsif @scanner.peek(1) == "}"
             @scanner.skip(/\}/)
           else
-            if @scanner.peek(1) == "n"
-              byebug
-            end
             value = content_loop(name)
             content.concat(value) 
           end
