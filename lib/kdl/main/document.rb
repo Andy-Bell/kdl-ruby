@@ -1,4 +1,5 @@
 require 'kdl/main/node'
+require 'kdl/main/node_builder'
 require 'byebug'
 require 'strscan'
 
@@ -30,7 +31,7 @@ module Kdl
         name = "#{start}#{name}"
 
         if name.strip.length > 0
-          content = find_content(name.strip)
+          content = build_node(name.strip)
 
           nodes[name.strip] = content
         else
@@ -38,42 +39,16 @@ module Kdl
         end
       end
 
-      def find_content(name)
+      def build_node(name)
         string = @buffer.scan_until(/\n|\Z/)
         if string.include?("{")
           @buffer.unscan
           string = @buffer.scan_until(/\}/)
         end
 
-        @scanner = StringScanner.new(string)
+        node = NodeBuilder.new(name, string).node
 
-        content = []
-        while @scanner.peek(1) != "\n" && !@scanner.eos?
-          if @scanner.peek(1) == " "
-            @scanner.skip(/\s+/)
-          elsif @scanner.peek(1) == "}"
-            @scanner.skip(/\}/)
-          else
-            value = content_loop(name)
-            content.concat(value) 
-          end
-        end
-
-        content.length > 1 ? content : content[0]
-      end
-
-      def content_loop(name)
-        if @scanner.peek(1) == '"'
-          strings = @scanner.scan_until(/(".+")/)
-          strings.split('" "').map{|value| value.gsub('"', '').strip}
-        elsif @scanner.peek(1) == '{'
-          nested = @scanner.scan_until(/\}/)
-          content = Document.new(nested, name: name).nodes
-
-          [content]
-        else
-          []
-        end
+        node.to_h[:arguments]
       end
     end
   end
